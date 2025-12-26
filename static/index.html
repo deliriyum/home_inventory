@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Inventory Sales App</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Home Inventory Sales Manager</h1>
+            <div class="stats-bar" id="statsBar">
+                <div class="stat">
+                    <span class="stat-label">Total Items:</span>
+                    <span class="stat-value" id="totalItems">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Inventory Value:</span>
+                    <span class="stat-value" id="inventoryValue">$0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Potential Profit:</span>
+                    <span class="stat-value" id="potentialProfit">$0</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="actions">
+                <button class="btn btn-primary" onclick="showAddItemModal()">+ Add New Item</button>
+                <div class="filter-group">
+                    <label>Filter:</label>
+                    <select id="statusFilter" onchange="filterItems()">
+                        <option value="">All Items</option>
+                        <option value="inventory" selected>Inventory</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="items-grid" id="itemsGrid">
+                <!-- Items will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeItemModal()">&times;</span>
+            <h2 id="modalTitle">Add New Item</h2>
+
+            <form id="itemForm" onsubmit="handleItemSubmit(event)">
+                <div class="form-section">
+                    <h3>1. Upload Photo</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+                        <label for="imageInput" class="upload-label">
+                            <div class="upload-icon">📷</div>
+                            <div>Click to upload or drag and drop</div>
+                            <div class="upload-hint">PNG, JPG, GIF up to 16MB</div>
+                        </label>
+                        <img id="imagePreview" class="image-preview" style="display: none;">
+                    </div>
+                    <input type="hidden" id="imagePath" name="image_path">
+                </div>
+
+                <div class="form-section">
+                    <h3>2. AI Analysis</h3>
+                    <div class="form-group">
+                        <label for="userDescription">Item Description (Optional - helps AI):</label>
+                        <input type="text" id="userDescription" placeholder="e.g., 'vintage lamp' or 'broken iPhone'">
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="analyzeWithAI()" id="analyzeBtn" disabled>
+                        🤖 Analyze with AI
+                    </button>
+                    <div id="analysisResult" class="analysis-result" style="display: none;"></div>
+                </div>
+
+                <div class="form-section">
+                    <h3>3. Item Details</h3>
+                    <div class="form-group">
+                        <label for="itemName">Item Name:</label>
+                        <input type="text" id="itemName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <input type="text" id="category" name="category">
+                    </div>
+                    <div class="form-group">
+                        <label for="condition">Condition:</label>
+                        <select id="condition" name="condition">
+                            <option value="excellent">Excellent</option>
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                            <option value="poor">Poor</option>
+                            <option value="for_parts">For Parts</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>4. Pricing</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="pricePaid">Price Paid:</label>
+                            <input type="number" id="pricePaid" name="price_paid" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="retailValue">Est. Retail Value:</label>
+                            <input type="number" id="retailValue" name="retail_value" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="askingPrice">Asking Price:</label>
+                            <input type="number" id="askingPrice" name="asking_price" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="retailValueSource">Value Source:</label>
+                        <input type="text" id="retailValueSource" name="retail_value_source" placeholder="e.g., eBay, estimated">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>5. Repairs</h3>
+                    <div class="form-group">
+                        <label for="repairAssessment">Repair Assessment:</label>
+                        <textarea id="repairAssessment" name="repair_assessment" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <input type="hidden" id="itemId" name="id">
+                <input type="hidden" id="aiIdentifiedName" name="ai_identified_name">
+                <input type="hidden" id="aiConfidence" name="ai_confidence">
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeItemModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Item Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content modal-wide">
+            <span class="close" onclick="closeDetailModal()">&times;</span>
+            <div id="itemDetail">
+                <!-- Item details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
