@@ -302,6 +302,7 @@ if __name__ == '__main__':
     init_db()
 
     # Run the app
+    port = int(os.getenv('PORT', 5000))
     print("Starting Home Inventory Sales App...")
-    print("Access the app at: http://localhost:5000")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    print(f"Access the app at: http://localhost:{port}")
+    app.run(debug=True, host='0.0.0.0', port=port)

@@ -14,6 +14,14 @@ A comprehensive web application for managing items that need repair or sale. Use
 - **✅ Sales Management** - Mark items as sold and track sales history
 - **📈 Statistics Dashboard** - View total inventory value and potential profits
 
+## Quick Start - Deploy to Cloud
+
+**Want to use this from your mobile device right away?**
+
+See [DEPLOY.md](DEPLOY.md) for step-by-step instructions to deploy to Render.com (free tier).
+
+Takes about 5 minutes to set up, then access from anywhere!
+
 ## Tech Stack
 
 - **Backend**: Python Flask
